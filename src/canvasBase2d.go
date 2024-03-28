@@ -4,14 +4,6 @@ import (
     "sort"
 )
 
-func (c *Canvas) Fill(col Color) {
-    for i := int16(0); i<c.sizeY; i++ {
-        for j := int16(0); j<c.sizeX; j++ {
-            c.data[i][j] = col;
-        }
-    }
-}
-
 // Bresenham's line algorithm
 func (c *Canvas) DrawLine(a U16Vec2, b U16Vec2, col Color) {
     na := I16Vec2{int16(a.X), int16(a.Y)};

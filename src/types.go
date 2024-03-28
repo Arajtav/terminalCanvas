@@ -15,3 +15,15 @@ type I16Vec2 struct {
     X int16;
     Y int16;
 }
+
+type I16Vec2C struct {
+    X int16;
+    Y int16;
+    C Color;
+}
+
+type U16Vec2C struct {
+    X uint16;
+    Y uint16;
+    C Color;
+}

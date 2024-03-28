@@ -23,6 +23,14 @@ func NewCanvas(sx int16, sy int16) *Canvas {
     return &c;
 }
 
+func (c *Canvas) Fill(col Color) {
+    for i := int16(0); i<c.sizeY; i++ {
+        for j := int16(0); j<c.sizeX; j++ {
+            c.data[i][j] = col;
+        }
+    }
+}
+
 func (c *Canvas) Print() {
     for i := int16(0); i<c.sizeY-1; i+=2 {
         for j := int16(0); j<c.sizeX; j++ {

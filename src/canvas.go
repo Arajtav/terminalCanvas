@@ -50,3 +50,38 @@ func cvPosCenter(p I16Vec2, sx int16, sy int16) U16Vec2 { return U16Vec2{uint16(
 func (c *Canvas) SetPixelC(pos I16Vec2, col Color) {
     c.SetPixel(cvPosCenter(pos, c.sizeX, c.sizeY), col);
 }
+
+// Bresenham's line algorithm
+func (s *Canvas) DrawLine(a I16Vec2, b I16Vec2, col Color) {
+    d := I16Vec2{b.X - a.X, b.Y - a.Y};
+    g := I16Vec2{1, 1};
+
+    if d.X < 0 {
+        d.X = -d.X;
+        g.X = -1;
+    }
+    if d.Y < 0 {
+        d.Y = -d.Y;
+        g.Y = -1;
+    }
+
+    err := d.X - d.Y;
+    cp := a;
+
+    for {
+        // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
+        if cp.X >= int16(s.sizeX) || cp.Y >= int16(s.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
+        s.data[cp.Y][cp.X] = col;
+        if cp.X == b.X && cp.Y == b.Y { break; }
+
+        e2 := 2 * err;
+        if e2 > -d.Y {
+            err -= d.Y;
+            cp.X += g.X;
+        }
+        if e2 < d.X {
+            err += d.X;
+            cp.Y += g.Y;
+        }
+    }
+}

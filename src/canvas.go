@@ -52,8 +52,10 @@ func (c *Canvas) SetPixelC(pos I16Vec2, col Color) {
 }
 
 // Bresenham's line algorithm
-func (s *Canvas) DrawLine(a I16Vec2, b I16Vec2, col Color) {
-    d := I16Vec2{b.X - a.X, b.Y - a.Y};
+func (c *Canvas) DrawLine(a U16Vec2, b U16Vec2, col Color) {
+    na := I16Vec2{int16(a.X), int16(a.Y)};
+    nb := I16Vec2{int16(b.X), int16(b.Y)};
+    d := I16Vec2{nb.X - na.X, nb.Y - na.Y};
     g := I16Vec2{1, 1};
 
     if d.X < 0 {
@@ -66,13 +68,13 @@ func (s *Canvas) DrawLine(a I16Vec2, b I16Vec2, col Color) {
     }
 
     err := d.X - d.Y;
-    cp := a;
+    cp := na;
 
     for {
         // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
-        if cp.X >= int16(s.sizeX) || cp.Y >= int16(s.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
-        s.data[cp.Y][cp.X] = col;
-        if cp.X == b.X && cp.Y == b.Y { break; }
+        if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
+        c.data[cp.Y][cp.X] = col;
+        if cp.X == nb.X && cp.Y == nb.Y { break; }
 
         e2 := 2 * err;
         if e2 > -d.Y {
@@ -84,4 +86,8 @@ func (s *Canvas) DrawLine(a I16Vec2, b I16Vec2, col Color) {
             cp.Y += g.Y;
         }
     }
+}
+
+func (c *Canvas) DrawLineC(a I16Vec2, b I16Vec2, col Color) {
+    c.DrawLine(cvPosCenter(a, c.sizeX, c.sizeY), cvPosCenter(b, c.sizeX, c.sizeY), col);
 }

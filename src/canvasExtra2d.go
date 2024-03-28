@@ -35,10 +35,16 @@ func (c *Canvas) DrawLineI(a U16Vec2C, b U16Vec2C) {
     err := d.X - d.Y;
     cp := I16Vec2{na.X, na.Y};
 
+    tl := distI16Vec2(I16Vec2{na.X, na.Y}, I16Vec2{nb.X, nb.Y});
+    if tl < 1 {
+        c.SetPixel(U16Vec2{a.X, a.Y}, interpolateColor(a.C, b.C, 0.5));
+        return;
+    }
+
     for {
         // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
         if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
-        c.data[cp.Y][cp.X] = interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{na.X, na.Y}, cp)/distI16Vec2(I16Vec2{na.X, na.Y}, I16Vec2{nb.X, nb.Y}));
+        c.data[cp.Y][cp.X] = interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl);
         if cp.X == nb.X && cp.Y == nb.Y { break; }
 
         e2 := 2 * err;
@@ -77,8 +83,14 @@ func getLineI(a I16Vec2C, b I16Vec2C) []I16Vec2C {
 
     var points []I16Vec2C;
 
+    tl := distI16Vec2(I16Vec2{a.X, a.Y}, I16Vec2{b.X, b.Y});
+    if tl < 1 {
+        points = append(points, I16Vec2C{a.X, a.Y, interpolateColor(a.C, b.C, 0.5)});
+        return points;
+    }
+
     for {
-        points = append(points, I16Vec2C{cp.X, cp.Y, interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{a.X, b.X}, cp)/distI16Vec2(I16Vec2{a.X, a.Y}, I16Vec2{b.X, b.Y}))});
+        points = append(points, I16Vec2C{cp.X, cp.Y, interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{a.X, b.X}, cp)/tl)});
         if cp.X == b.X && cp.Y == b.Y { break; }
 
         e2 := 2 * err;

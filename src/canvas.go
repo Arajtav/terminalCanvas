@@ -8,6 +8,7 @@ type Canvas struct {
     sizeX   int16;
     sizeY   int16;
     data    [][]Color;
+    Ccolor  Color;
 }
 
 func NewCanvas(sx int16, sy int16) *Canvas {
@@ -29,6 +30,10 @@ func (c *Canvas) Fill(col Color) {
             c.data[i][j] = col;
         }
     }
+}
+
+func (c *Canvas) Clear() {
+    c.Fill(c.Ccolor);
 }
 
 func (c *Canvas) Print() {

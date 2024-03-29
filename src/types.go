@@ -1,5 +1,6 @@
 package terminalCanvas
 
+// RGB one byte per channel
 type Color struct {
     R uint8;
     G uint8;

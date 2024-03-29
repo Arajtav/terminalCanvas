@@ -4,7 +4,7 @@ import (
     "sort"
 )
 
-// Bresenham's line algorithm
+// Draws line using Bresenham's line algorithm
 func (c *Canvas) DrawLine(a U16Vec2, b U16Vec2, col Color) {
     na := I16Vec2{int16(a.X), int16(a.Y)};
     nb := I16Vec2{int16(b.X), int16(b.Y)};
@@ -41,11 +41,12 @@ func (c *Canvas) DrawLine(a U16Vec2, b U16Vec2, col Color) {
     }
 }
 
+// DrawLine but {0, 0} is center of canvas
 func (c *Canvas) DrawLineC(a I16Vec2, b I16Vec2, col Color) {
     c.DrawLine(cvPosCenter(a, c.sizeX, c.sizeY), cvPosCenter(b, c.sizeX, c.sizeY), col);
 }
 
-// Bresenham's line algorithm
+// Returns points making line, using Bresenham's line algorithm
 func getLine(a I16Vec2, b I16Vec2) []I16Vec2 {
     d := I16Vec2{b.X - a.X, b.Y - a.Y};
     g := I16Vec2{1, 1};
@@ -81,7 +82,7 @@ func getLine(a I16Vec2, b I16Vec2) []I16Vec2 {
     return points;
 }
 
-// scan line algorithm
+// Draws filled triangle using scan line algorithm
 func (c *Canvas) DrawTriangle(p0 U16Vec2, p1 U16Vec2, p2 U16Vec2, col Color) {
     var points []I16Vec2;
     points = append(points, getLine(I16Vec2{int16(p0.X), int16(p0.Y)}, I16Vec2{int16(p1.X), int16(p1.Y)})...);
@@ -106,6 +107,7 @@ func (c *Canvas) DrawTriangle(p0 U16Vec2, p1 U16Vec2, p2 U16Vec2, col Color) {
     }
 }
 
+// Same as DrawTriangle but {0, 0} is center of canvas
 func (c *Canvas) DrawTriangleC(p0 I16Vec2, p1 I16Vec2, p2 I16Vec2, col Color) {
     c.DrawTriangle(cvPosCenter(p0, c.sizeX, c.sizeY), cvPosCenter(p1, c.sizeX, c.sizeY), cvPosCenter(p2, c.sizeX, c.sizeY), col);
 }

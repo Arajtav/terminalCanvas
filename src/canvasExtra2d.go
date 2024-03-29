@@ -5,6 +5,7 @@ import (
     "sort"
 )
 
+// Linear interpolation between 2 colors. t should be between 0 and 1
 func interpolateColor(a Color, b Color, t float64) Color {
     var c Color;
     c.R = uint8(float64(a.R) + ((float64(b.R)-float64(a.R))*t));
@@ -13,10 +14,12 @@ func interpolateColor(a Color, b Color, t float64) Color {
     return c;
 }
 
+// Distance between 2 points
 func distI16Vec2(a I16Vec2, b I16Vec2) float64 {
     return math.Sqrt(math.Pow(float64(a.X-b.X), 2.0) + math.Pow(float64(a.Y-b.Y), 2.0));
 }
 
+// Draws line interpolating colors between
 func (c *Canvas) DrawLineI(a U16Vec2C, b U16Vec2C) {
     na := I16Vec2C{int16(a.X), int16(a.Y), a.C};
     nb := I16Vec2C{int16(b.X), int16(b.Y), b.C};
@@ -59,12 +62,14 @@ func (c *Canvas) DrawLineI(a U16Vec2C, b U16Vec2C) {
     }
 }
 
+// Same as DrawLineI but {0, 0} is canvas center
 func (c *Canvas) DrawLineIC(a I16Vec2C, b I16Vec2C) {
     na := cvPosCenter(I16Vec2{a.X, a.Y}, c.sizeX, c.sizeY);
     nb := cvPosCenter(I16Vec2{b.X, b.Y}, c.sizeX, c.sizeY);
     c.DrawLineI(U16Vec2C{na.X, na.Y, a.C}, U16Vec2C{nb.X, nb.Y, b.C});
 }
 
+// Same as getLine but interpolates colors of points
 func getLineI(a I16Vec2C, b I16Vec2C) []I16Vec2C {
     d := I16Vec2{b.X - a.X, b.Y - a.Y};
     g := I16Vec2{1, 1};

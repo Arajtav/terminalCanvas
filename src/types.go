@@ -28,3 +28,14 @@ type U16Vec2C struct {
     Y uint16;
     C Color;
 }
+
+type F32Vec2 struct {
+    X float32;
+    Y float32;
+}
+
+// Fragment data
+type U16Frag struct {
+    Pos U16Vec2;
+    UV  F32Vec2;
+}

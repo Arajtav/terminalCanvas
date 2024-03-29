@@ -95,7 +95,7 @@ func getLineI(a I16Vec2C, b I16Vec2C) []I16Vec2C {
     }
 
     for {
-        points = append(points, I16Vec2C{cp.X, cp.Y, interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{a.X, b.X}, cp)/tl)});
+        points = append(points, I16Vec2C{cp.X, cp.Y, interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{a.X, a.Y}, cp)/tl)});
         if cp.X == b.X && cp.Y == b.Y { break; }
 
         e2 := 2 * err;
@@ -111,7 +111,7 @@ func getLineI(a I16Vec2C, b I16Vec2C) []I16Vec2C {
     return points;
 }
 
-// TODO THIS IS BROKEN
+// Draws filled triangle with colors interpolated between points
 func (c *Canvas) DrawTriangleI(p0 U16Vec2C, p1 U16Vec2C, p2 U16Vec2C) {
     var points []I16Vec2C;
     points = append(points, getLineI(I16Vec2C{int16(p0.X), int16(p0.Y), p0.C}, I16Vec2C{int16(p1.X), int16(p1.Y), p1.C})...);
@@ -136,6 +136,7 @@ func (c *Canvas) DrawTriangleI(p0 U16Vec2C, p1 U16Vec2C, p2 U16Vec2C) {
     }
 }
 
+// Same as DrawTriangleI but {0, 0} is canvas center
 func (c *Canvas) DrawTriangleIC(p0 I16Vec2C, p1 I16Vec2C, p2 I16Vec2C) {
     p0n := cvPosCenter(I16Vec2{p0.X, p0.Y}, c.sizeX, c.sizeY);
     p1n := cvPosCenter(I16Vec2{p1.X, p1.Y}, c.sizeX, c.sizeY);

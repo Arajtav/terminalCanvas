@@ -50,6 +50,10 @@ func (c *Canvas) DrawLineF(a U16Frag, b U16Frag, f Material) {
     }
 }
 
+func (c *Canvas) DrawLineFC(a I16Frag, b I16Frag, f Material) {
+    c.DrawLineF(U16Frag{cvPosCenter(a.Pos, c.sizeX, c.sizeY), a.UV}, U16Frag{cvPosCenter(b.Pos, c.sizeX, c.sizeY), b.UV}, f);
+}
+
 func getLineF(a U16Frag, b U16Frag) []U16Frag {
     d := I16Vec2{int16(b.Pos.X) - int16(a.Pos.X), int16(b.Pos.Y) - int16(a.Pos.Y)};
     g := I16Vec2{1, 1};
@@ -115,3 +119,6 @@ func (c *Canvas) DrawTriangleF(p0 U16Frag, p1 U16Frag, p2 U16Frag, f Material) {
     }
 }
 
+func (c *Canvas) DrawTriangleFC(p0 I16Frag, p1 I16Frag, p2 I16Frag, f Material) {
+    c.DrawTriangleF(U16Frag{cvPosCenter(p0.Pos, c.sizeX, c.sizeY), p0.UV}, U16Frag{cvPosCenter(p1.Pos, c.sizeX, c.sizeY), p1.UV}, U16Frag{cvPosCenter(p2.Pos, c.sizeX, c.sizeY), p2.UV}, f);
+}

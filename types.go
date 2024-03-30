@@ -39,3 +39,8 @@ type U16Frag struct {
     Pos U16Vec2;
     UV  F32Vec2;
 }
+
+type I16Frag struct {
+    Pos I16Vec2;
+    UV  F32Vec2;
+}

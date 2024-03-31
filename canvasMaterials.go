@@ -35,7 +35,11 @@ func (c *Canvas) DrawLineF(a U16Frag, b U16Frag, f Material) {
     for {
         // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
         if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
-        c.data[cp.Y][cp.X] = f.GetColor(interpolateUV(a.UV, b.UV, float32(distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl)));
+        t := float32(distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl);
+        if c.data[cp.Y][cp.X].Z >= (a.Z+((b.Z-a.Z)*t)) {
+            c.data[cp.Y][cp.X].C = f.GetColor(interpolateUV(a.UV, b.UV, t));
+            c.data[cp.Y][cp.X].Z = (a.Z+((b.Z-a.Z)*t));
+        }
         if cp.X == nb.X && cp.Y == nb.Y { break; }
 
         e2 := 2 * err;
@@ -51,7 +55,7 @@ func (c *Canvas) DrawLineF(a U16Frag, b U16Frag, f Material) {
 }
 
 func (c *Canvas) DrawLineFC(a I16Frag, b I16Frag, f Material) {
-    c.DrawLineF(U16Frag{cvPosCenter(a.Pos, c.sizeX, c.sizeY), a.UV}, U16Frag{cvPosCenter(b.Pos, c.sizeX, c.sizeY), b.UV}, f);
+    c.DrawLineF(U16Frag{cvPosCenter(a.Pos, c.sizeX, c.sizeY), a.UV, a.Z}, U16Frag{cvPosCenter(b.Pos, c.sizeX, c.sizeY), b.UV, b.Z}, f);
 }
 
 func getLineF(a U16Frag, b U16Frag) []U16Frag {
@@ -74,12 +78,13 @@ func getLineF(a U16Frag, b U16Frag) []U16Frag {
 
     tl := distI16Vec2(I16Vec2{int16(a.Pos.X), int16(a.Pos.Y)}, I16Vec2{int16(b.Pos.X), int16(b.Pos.Y)});
     if tl < 1 {
-        points = append(points, U16Frag{a.Pos, interpolateUV(a.UV, b.UV, 0.5)});
+        points = append(points, U16Frag{a.Pos, interpolateUV(a.UV, b.UV, 0.5), a.Z+((b.Z-a.Z)*0.5)});
         return points;
     }
 
     for {
-        points = append(points, U16Frag{U16Vec2{uint16(cp.X), uint16(cp.Y)}, interpolateUV(a.UV, b.UV, float32(distI16Vec2(I16Vec2{int16(a.Pos.X), int16(a.Pos.Y)}, cp)/tl))});
+        t := float32(distI16Vec2(I16Vec2{int16(a.Pos.X), int16(a.Pos.Y)}, cp)/tl);
+        points = append(points, U16Frag{U16Vec2{uint16(cp.X), uint16(cp.Y)}, interpolateUV(a.UV, b.UV, t), a.Z + ((b.Z-a.Z)*t)});
         if cp.X == int16(b.Pos.X) && cp.Y == int16(b.Pos.Y) { break; }
 
         e2 := 2 * err;
@@ -120,5 +125,8 @@ func (c *Canvas) DrawTriangleF(p0 U16Frag, p1 U16Frag, p2 U16Frag, f Material) {
 }
 
 func (c *Canvas) DrawTriangleFC(p0 I16Frag, p1 I16Frag, p2 I16Frag, f Material) {
-    c.DrawTriangleF(U16Frag{cvPosCenter(p0.Pos, c.sizeX, c.sizeY), p0.UV}, U16Frag{cvPosCenter(p1.Pos, c.sizeX, c.sizeY), p1.UV}, U16Frag{cvPosCenter(p2.Pos, c.sizeX, c.sizeY), p2.UV}, f);
+    c.DrawTriangleF(U16Frag{cvPosCenter(p0.Pos, c.sizeX, c.sizeY), p0.UV, p0.Z},
+                    U16Frag{cvPosCenter(p1.Pos, c.sizeX, c.sizeY), p1.UV, p1.Z},
+                    U16Frag{cvPosCenter(p2.Pos, c.sizeX, c.sizeY), p2.UV, p2.Z},
+                    f);
 }

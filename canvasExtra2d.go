@@ -47,7 +47,8 @@ func (c *Canvas) DrawLineI(a U16Vec2C, b U16Vec2C) {
     for {
         // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
         if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
-        c.data[cp.Y][cp.X] = interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl);
+        c.data[cp.Y][cp.X].C = interpolateColor(a.C, b.C, distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl);
+        c.data[cp.Y][cp.X].Z = math.MaxFloat32;
         if cp.X == nb.X && cp.Y == nb.Y { break; }
 
         e2 := 2 * err;

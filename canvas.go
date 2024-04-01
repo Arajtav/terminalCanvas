@@ -70,7 +70,20 @@ func (c *Canvas) PrintZ() {
         }
         fmt.Println("\033[0m");
     }
+}
 
+// Prints canvas to terminal, but if ignores pixels which have z equal math.MaxFloat32
+func (c *Canvas) PrintT() {
+    for i := int16(0); i<c.sizeY-1; i+=2 {
+        for j := int16(0); j<c.sizeX; j++ {
+            if c.data[i][j].Z == math.MaxFloat32 {
+                fmt.Print("\033[0m ");
+            } else {
+                fmt.Printf("\033[48;2;%d;%d;%dm\033[38;2;%d;%d;%dm▄", c.data[i][j].C.R, c.data[i][j].C.G, c.data[i][j].C.B, c.data[i+1][j].C.R, c.data[i+1][j].C.G, c.data[i+1][j].C.B);
+            }
+        }
+        fmt.Println("\033[0m");
+    }
 }
 
 // Sets pixel at given position to given color

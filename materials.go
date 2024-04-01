@@ -1,5 +1,9 @@
 package terminalCanvas
 
+import (
+    "image"
+)
+
 // TODO: RENAME THAT PROBABLY
 type Material interface {
     GetColor(F32Vec2) Color;
@@ -15,10 +19,20 @@ func (M MaterialUV) GetColor(coord F32Vec2) Color {
     return Color{uint8(coord.X*255), uint8(coord.Y*255), 0};
 }
 
+// Material to check if UV range is correct
+// Green - correct (UV X and Y between 0.0 and 1.0)
+// Red   - wrong
 type MaterialUVtest struct {};
 func (M MaterialUVtest) GetColor(coord F32Vec2) Color {
     if coord.X > 1.0 || coord.X < 0.0 || coord.Y > 1.0 || coord.Y < 0.0 {
         return Color{255, 0, 0};
     }
     return Color{0, 255, 0};
+}
+
+type MaterialImage struct {Img image.Image};
+func (M MaterialImage) GetColor(coord F32Vec2) Color {
+    r, g, b, _ := M.Img.At( int(float32(M.Img.Bounds().Dx()-1)*coord.X),
+                            int(float32(M.Img.Bounds().Dy()-1)*coord.Y)).RGBA();
+    return Color{uint8(r/256), uint8(g/256), uint8(b/256)};
 }

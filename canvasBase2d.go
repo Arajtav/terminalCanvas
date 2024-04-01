@@ -27,8 +27,7 @@ func (c *Canvas) DrawLine(a U16Vec2, b U16Vec2, col Color) {
     for {
         // TODO: ALIGN POINTS TO CANVAS EDGE FIRST INSTEAD DOING THAT CHECK
         if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
-        c.data[cp.Y][cp.X].C = col;
-        c.data[cp.Y][cp.X].Z = math.MaxFloat32;
+        c.setPixelUnsafe(U16Vec2{uint16(cp.X), uint16(cp.Y)}, col, math.MaxFloat32);
         if cp.X == nb.X && cp.Y == nb.Y { break; }
 
         e2 := 2 * err;

@@ -75,9 +75,23 @@ func (c *Canvas) PrintZ() {
 
 // Sets pixel at given position to given color
 func (c *Canvas) SetPixel(pos U16Vec2, col Color) {
+    if col.A == 0 { return; }
     if pos.X >= uint16(c.sizeX) || pos.Y >= uint16(c.sizeY) { return; }
-    c.data[pos.Y][pos.X].C = col;
+    t := float32(col.A)/255.0;
+    c.data[pos.Y][pos.X].C.R = uint8(float32(c.data[pos.Y][pos.X].C.R) + ((float32(col.R)-float32(c.data[pos.Y][pos.X].C.R))*t));
+    c.data[pos.Y][pos.X].C.G = uint8(float32(c.data[pos.Y][pos.X].C.G) + ((float32(col.G)-float32(c.data[pos.Y][pos.X].C.G))*t));
+    c.data[pos.Y][pos.X].C.B = uint8(float32(c.data[pos.Y][pos.X].C.B) + ((float32(col.B)-float32(c.data[pos.Y][pos.X].C.B))*t));
     c.data[pos.Y][pos.X].Z = math.MaxFloat32;
+}
+
+// Same as SetPixel but it doesn't check if position is in correct range. It also allows you to set Z
+func (c *Canvas) setPixelUnsafe(pos U16Vec2, col Color, z float32) {
+    if col.A == 0 { return; }
+    t := float32(col.A)/255.0;
+    c.data[pos.Y][pos.X].C.R = uint8(float32(c.data[pos.Y][pos.X].C.R) + ((float32(col.R)-float32(c.data[pos.Y][pos.X].C.R))*t));
+    c.data[pos.Y][pos.X].C.G = uint8(float32(c.data[pos.Y][pos.X].C.G) + ((float32(col.G)-float32(c.data[pos.Y][pos.X].C.G))*t));
+    c.data[pos.Y][pos.X].C.B = uint8(float32(c.data[pos.Y][pos.X].C.B) + ((float32(col.B)-float32(c.data[pos.Y][pos.X].C.B))*t));
+    c.data[pos.Y][pos.X].Z = z;
 }
 
 // Convert coordinates so that {0, 0} is top left corner instead center of canvas

@@ -37,8 +37,7 @@ func (c *Canvas) DrawLineF(a U16Frag, b U16Frag, f Material) {
         if cp.X >= int16(c.sizeX) || cp.Y >= int16(c.sizeY) || cp.X < 0 || cp.Y < 0 { break; }
         t := float32(distI16Vec2(I16Vec2{na.X, na.Y}, cp)/tl);
         if c.data[cp.Y][cp.X].Z >= (a.Z+((b.Z-a.Z)*t)) {
-            c.data[cp.Y][cp.X].C = f.GetColor(interpolateUV(a.UV, b.UV, t));
-            c.data[cp.Y][cp.X].Z = (a.Z+((b.Z-a.Z)*t));
+            c.setPixelUnsafe(U16Vec2{uint16(cp.X), uint16(cp.Y)}, f.GetColor(interpolateUV(a.UV, b.UV, t)), (a.Z+((b.Z-a.Z)*t)));
         }
         if cp.X == nb.X && cp.Y == nb.Y { break; }
 

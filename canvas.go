@@ -51,6 +51,31 @@ func (c *Canvas) Print() {
         fmt.Println("\033[0m");
     }
 }
+
+// Prints only pixels that differ between canvas
+func (c *Canvas) PrintD(d *Canvas) {
+    if d.sizeX != c.sizeX || d.sizeY != c.sizeY {
+        fmt.Println("terminalCanvas: error cannot execute PrintD on canvas with different size");
+    }
+
+    var lwp struct{i int16; j int16};   // last written position, if there are 2 chars in a row we don't need to move cursor with escape sequence
+
+    for i := int16(0); i<c.sizeY-1; i+=2 {
+        for j := int16(0); j<c.sizeX; j++ {
+            if c.data[i][j] == d.data[i][j] && c.data[i+1][j] == d.data[i+1][j] { continue; }
+
+            if lwp.i != i || lwp.j != j-1 {
+                fmt.Printf("\033[%d;%dH", (i/2)+1, j+1);
+            }
+
+            fmt.Printf("\033[48;2;%d;%d;%dm\033[38;2;%d;%d;%dm▄", c.data[i][j].C.R, c.data[i][j].C.G, c.data[i][j].C.B, c.data[i+1][j].C.R, c.data[i+1][j].C.G, c.data[i+1][j].C.B);
+            lwp.i = i; lwp.j = j;
+        }
+    }
+    fmt.Printf("\033[%d;%dH", (c.sizeY/2), 1);
+    fmt.Println("\033[0m");
+}
+
 // Prints Z buffer, larger Z is brighter
 func (c *Canvas) PrintZ() {
     var min float32 = math.MaxFloat32;

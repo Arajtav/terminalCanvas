@@ -36,3 +36,10 @@ func (M MaterialImage) GetColor(coord F32Vec2) Color {
                             int(float32(M.Img.Bounds().Dy()-1)*coord.Y)).RGBA();
     return Color{uint8(r/256), uint8(g/256), uint8(b/256), uint8(a/256)};
 }
+
+type MaterialPseudoRandom struct {w uint32};
+func (M *MaterialPseudoRandom) GetColor(coord F32Vec2) Color {
+    M.w = M.w*98765 + 12345678;
+    tmp := uint8(M.w);
+    return Color{R: tmp, G: tmp, B: tmp, A: 255};
+}

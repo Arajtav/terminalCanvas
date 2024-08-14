@@ -52,3 +52,9 @@ type I16Frag struct {
     UV  F32Vec2
     Z   float32
 }
+
+type F32Vec3 struct {
+    X float32
+    Y float32
+    Z float32
+}
